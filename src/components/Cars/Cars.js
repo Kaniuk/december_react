@@ -15,7 +15,7 @@ const Cars = () => {
 
     return (
         <div className='column'>
-            {cars.map(car => <Car key={car.id} car={car}/>)}
+            {Object.values(cars).map(car => <Car key={car.id} car={car}/>)}
         </div>
     );
 };

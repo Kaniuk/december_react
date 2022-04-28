@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {carService} from "../../services";
 
 const initialState = {
-    cars: [],
+    cars: {},
     status: null,
     formErrors: {}
 };
@@ -39,6 +39,7 @@ const deleteAsync = createAsyncThunk(
     }
 );
 
+
 const carSlice = createSlice({
     name: 'carSlice',
     initialState: initialState,
@@ -47,10 +48,14 @@ const carSlice = createSlice({
         builder
             .addCase(getAll.fulfilled, (state, action) => {
                 state.status = 'completed';
-                state.cars = action.payload;
+                state.cars = action.payload.reduce((carsMap, car) => {
+                    carsMap[car.id] = car;
+                    return carsMap;
+                }, {});
             })
-            .addCase(createAsync.fulfilled, (state, action) => {
-                state.cars.push(action.payload);
+            .addCase(createAsync.fulfilled, (state, {payload: car}) => {
+
+                state.cars[car.id] = car;
             })
             .addCase(createAsync.rejected, (state, action) => {
                 const {status, formErrors} = action.payload;
@@ -59,7 +64,7 @@ const carSlice = createSlice({
             })
             .addCase(deleteAsync.fulfilled, (state, action) => {
                 const id = action.payload;
-                state.cars = state.cars.filter(car => car.id !== id);
+                delete state.cars[id];
             });
     }
 });
