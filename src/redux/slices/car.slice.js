@@ -15,6 +15,15 @@ const getAll = createAsyncThunk(
     }
 );
 
+
+const getCar = createAsyncThunk(
+    'carSlice/getCar',
+    async (id) => {
+        const {data} = await carService.getById(id);
+        return data;
+    }
+);
+
 const createAsync = createAsyncThunk(
     'carSlice/createAsync',
     async ({car}, {dispatch, rejectWithValue}) => {
@@ -27,12 +36,24 @@ const createAsync = createAsyncThunk(
         }
     }
 );
+
 const deleteAsync = createAsyncThunk(
     'carSlice/deleteAsync',
-    async (id, {dispatch, rejectWithValue}) => {
+    async (id, {rejectWithValue}) => {
         try {
             await carService.delete(id);
             return id;
+        } catch (e) {
+            return rejectWithValue({status: e.message, formErrors: e.response.data});
+        }
+    }
+);
+const updateAsync = createAsyncThunk(
+    'carSlice/updateAsync',
+    async (car, {rejectWithValue}) => {
+        try {
+            const {data} = await carService.update(car.id, car);
+            return data;
         } catch (e) {
             return rejectWithValue({status: e.message, formErrors: e.response.data});
         }
@@ -53,8 +74,13 @@ const carSlice = createSlice({
                     return carsMap;
                 }, {});
             })
+            .addCase(getCar.fulfilled, (state, {payload: car}) => {
+                state.cars[car.id] = car;
+            })
             .addCase(createAsync.fulfilled, (state, {payload: car}) => {
-
+                state.cars[car.id] = car;
+            })
+            .addCase(updateAsync.fulfilled, (state, {payload: car}) => {
                 state.cars[car.id] = car;
             })
             .addCase(createAsync.rejected, (state, action) => {
@@ -70,12 +96,14 @@ const carSlice = createSlice({
 });
 
 
-const {reducer: carReducer, actions} = carSlice;
+const {reducer: carReducer} = carSlice;
 
 const carActions = {
     getAll,
+    getCar,
     createAsync,
-    deleteAsync
+    deleteAsync,
+    updateAsync
 };
 
 export {

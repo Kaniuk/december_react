@@ -1,16 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useForm} from "react-hook-form";
 import {useDispatch, useSelector} from "react-redux";
 import {carActions} from "../../redux/slices/car.slice";
 
-const CarForm = () => {
+const CarForm = ({car, osSuccess}) => {
     const {formErrors} = useSelector(state => state.cars);
-    const {register, reset, handleSubmit} = useForm();
+
+    const {register, reset, handleSubmit} = useForm({defaultValues: car});
     const dispatch = useDispatch();
 
     const submit = async (newCar) => {
-        await dispatch(carActions.createAsync({car: newCar}));
+        const action = car ? carActions.updateAsync(newCar) : carActions.createAsync({car: newCar});
+        await dispatch(action);
         reset();
+        osSuccess?.();
     };
 
     return (
@@ -24,7 +27,7 @@ const CarForm = () => {
             <div><label>year:<input type="text"{...register('year')}/></label></div>
             {formErrors.year && <span>{formErrors.year[0]}</span>}
 
-            <button>Save</button>
+            <button>{car ? 'Update' : 'Save'}</button>
         </form>
 
     );
