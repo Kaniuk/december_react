@@ -2,17 +2,19 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {episodeService} from "../../services";
 
 let initialState = {
-    next: null,
-    prev: null,
-    pages: null,
+    pageInfo: {
+        pages: null,
+        next: null,
+        prev: null,
+    },
     episodes: []
 
 };
 
 const getEpisodes = createAsyncThunk(
     'episodeSlice/getEpisodes',
-    async ({page}) => {
-        const {data} = await episodeService.getAll({page});
+    async (page = 1) => {
+        const {data} = await episodeService.getAll(page);
         return data;
     }
 );
@@ -23,9 +25,10 @@ const episodeSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addMatcher(action => {
-                debugger
-                return false;
+            .addCase(getEpisodes.fulfilled, (state, {payload}) => {
+                const {info, results} = payload;
+                state.pageInfo = info;
+                state.episodes = results;
             });
     }
 });

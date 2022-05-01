@@ -1,0 +1,16 @@
+.episode {
+    display: flex;
+    /*flex-wrap: wrap;*/
+    flex-direction: column;
+    border: 1px solid midnightblue;
+    border-radius: 5px;
+    background: lightsteelblue;
+    width: 200px;
+    height: 200px;
+    margin: 5px;
+    align-self: center;
+    justify-content: center;
+}
+.episode:hover {
+    background: lavenderblush;
+}

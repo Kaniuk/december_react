@@ -3,7 +3,7 @@ import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {episodeReducer} from "./slices/episode.slice";
 
 const rootReducer = combineReducers({
-    episodes: episodeReducer
+    episodeReducer
 });
 
 const store = configureStore({
