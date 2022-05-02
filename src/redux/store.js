@@ -1,9 +1,11 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 
 import {episodeReducer} from "./slices/episode.slice";
+import {charactersReducer} from "./slices/character.slice";
 
 const rootReducer = combineReducers({
-    episodeReducer
+    episodeReducer,
+    charactersReducer,
 });
 
 const store = configureStore({

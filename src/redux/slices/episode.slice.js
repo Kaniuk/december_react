@@ -18,6 +18,13 @@ const getEpisodes = createAsyncThunk(
         return data;
     }
 );
+const getEpisode = createAsyncThunk(
+    'episodeSlice/getEpisode',
+    async (id) => {
+        const {data} = await episodeService.getById(id);
+        return data;
+    }
+);
 
 const episodeSlice = createSlice({
     name: 'episodeSlice',
@@ -29,6 +36,9 @@ const episodeSlice = createSlice({
                 const {info, results} = payload;
                 state.pageInfo = info;
                 state.episodes = results;
+            })
+            .addCase(getEpisode.fulfilled, (state, {payload: episode}) => {
+                state.episodes = [episode];
             });
     }
 });
@@ -36,7 +46,8 @@ const episodeSlice = createSlice({
 const {reducer: episodeReducer} = episodeSlice;
 
 const episodeActions = {
-    getEpisodes
+    getEpisodes,
+    getEpisode,
 };
 
 export {
