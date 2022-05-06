@@ -11,6 +11,7 @@ const Cars = () => {
 
     useEffect(() => {
         dispatch(carActions.getAll());
+       // react-hooks/exhaustive-deps
     }, []);
 
     return (
